@@ -1,0 +1,16 @@
+=== FAIRNESS SCORES ===
+Dimension,Fairness Score,Disparity Ratio,Status
+gender,1.0,1.0,Fair
+caste,0.9931,0.9931,Fair
+language,0.9986,0.9986,Fair
+region,0.8755,1.1245,Fair
+
+=== BIAS EXPLANATIONS ===
+Dimension,Severity,Explanation,Root Cause
+gender,low,"Minimal bias detected in the Gender dimension. The fairness score of 1.00 indicates the model treats demographic variants largely equally, with only 15.0% average difference. The Disparate Impact Ratio of 1.00 meets the 0.80 threshold.",Minimal gender bias detected. The model treats gender-variant inputs largely equally with minor statistical variation.
+caste,low,"Minimal bias detected in the Caste/Identity dimension. The fairness score of 0.99 indicates the model treats demographic variants largely equally, with only 20.0% average difference. The Disparate Impact Ratio of 0.99 meets the 0.80 threshold.",Low caste-based disparity. Name-based features show minimal correlation with outcomes across caste groups.
+language,low,"Minimal bias detected in the Language dimension. The fairness score of 1.00 indicates the model treats demographic variants largely equally, with only 0.1% average difference. The Disparate Impact Ratio of 1.00 meets the 0.80 threshold.",Negligible language-based performance gap. The model handles linguistic variation adequately.
+region,low,"Minimal bias detected in the Region dimension. The fairness score of 0.88 indicates the model treats demographic variants largely equally, with only 7.2% average difference. The Disparate Impact Ratio of 1.12 meets the 0.80 threshold.",Minor regional variation within acceptable bounds. Geographic features have minimal impact on predictions.
+
+=== MITIGATION RECOMMENDATIONS ===
+Priority,Dimension,Type,Recommendation,Effort,Impact
