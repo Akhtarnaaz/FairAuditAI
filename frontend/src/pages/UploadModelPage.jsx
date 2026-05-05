@@ -1,15 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { modelsAPI } from '../api/client';
-import { Upload, FileCode, Link as LinkIcon, CheckCircle } from 'lucide-react';
+import { Upload, CheckCircle } from 'lucide-react';
 
 export default function UploadModelPage() {
   const navigate = useNavigate();
   const [modelName, setModelName] = useState('');
   const [modelType, setModelType] = useState('classification');
-  const [uploadType, setUploadType] = useState('file');
   const [file, setFile] = useState(null);
-  const [apiEndpoint, setApiEndpoint] = useState('');
   const [demoModelKey, setDemoModelKey] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -17,9 +15,12 @@ export default function UploadModelPage() {
   const [dragOver, setDragOver] = useState(false);
 
   const demoModels = [
-    { key: 'bias_logistic', name: 'Biased Logistic Regression', desc: 'Linear model with historical bias weights' },
-    { key: 'bias_rf', name: 'Biased Random Forest', desc: 'Non-linear model capturing complex bias patterns' },
-    { key: 'neutral', name: 'Neutral (Fair) Model', desc: 'Trained without sensitive attributes for comparison' }
+    { key: 'loan', name: 'Loan Approval', desc: 'Standard bias' },
+    { key: 'loan_extreme', name: 'Loan (Extreme)', desc: 'Severe bias against demographics' },
+    { key: 'hiring', name: 'Hiring Model', desc: 'Standard bias' },
+    { key: 'hiring_extreme', name: 'Hiring (Extreme)', desc: 'Severe bias against women/minorities' },
+    { key: 'healthcare', name: 'Healthcare', desc: 'Standard bias' },
+    { key: 'healthcare_extreme', name: 'Healthcare (Extreme)', desc: 'Severe bias in treatment' }
   ];
 
   const handleFileChange = (e) => {
@@ -57,16 +58,12 @@ export default function UploadModelPage() {
       formData.append('model_type', modelType);
       formData.append('model_version', '1.0');
       
-      if (uploadType === 'file') {
-        if (demoModelKey) {
-          formData.append('demo_model_key', demoModelKey);
-        } else if (file) {
-          formData.append('file', file);
-        } else {
-          throw new Error('Please select a file or a demo model');
-        }
-      } else if (uploadType === 'api') {
-        formData.append('api_endpoint', apiEndpoint);
+      if (demoModelKey) {
+        formData.append('demo_model_key', demoModelKey);
+      } else if (file) {
+        formData.append('file', file);
+      } else {
+        throw new Error('Please select a file');
       }
       
       await modelsAPI.upload(formData);
@@ -118,74 +115,27 @@ export default function UploadModelPage() {
             </div>
           </div>
 
-          <div className="form-group">
-            <label>Upload Method</label>
-            <div className="radio-group" style={{ gridTemplateColumns: '1fr 1fr' }}>
-              <label className={`radio-item ${uploadType === 'file' ? 'active' : ''}`}>
-                <input type="radio" value="file" checked={uploadType === 'file'}
-                  onChange={(e) => setUploadType(e.target.value)} />
-                <FileCode size={16} /> Model File / Presets
-              </label>
-              <label className={`radio-item ${uploadType === 'api' ? 'active' : ''}`}>
-                <input type="radio" value="api" checked={uploadType === 'api'}
-                  onChange={(e) => setUploadType(e.target.value)} />
-                <LinkIcon size={16} /> Live API URL
-              </label>
+          <div className="animate-slide-up">
+            <div className={`upload-zone ${dragOver ? 'dragover' : ''} ${demoModelKey ? 'opacity-50' : ''}`}
+              onDragOver={(e) => { if(!demoModelKey) { e.preventDefault(); setDragOver(true); } }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={demoModelKey ? undefined : handleDrop}
+              onClick={() => !demoModelKey && document.getElementById('file-input').click()}>
+              <input type="file" id="file-input" accept=".pkl,.h5,.pickle,.joblib"
+                onChange={handleFileChange} disabled={!!demoModelKey} />
+              <Upload size={32} style={{ color: 'var(--text-muted)', marginBottom: 8 }} />
+              {file ? (
+                <p style={{ fontWeight: 600, color: 'var(--color-fair)' }}>{file.name} ({(file.size / 1024 / 1024).toFixed(1)}MB)</p>
+              ) : demoModelKey ? (
+                <p style={{ fontWeight: 600, color: 'var(--accent-primary)' }}>Using Demo: {demoModels.find(m => m.key === demoModelKey).name}</p>
+              ) : (
+                <>
+                  <p style={{ fontWeight: 500 }}>Drop your model file here</p>
+                  <p className="text-muted" style={{ fontSize: '0.8rem' }}>Supports .pkl, .joblib, .pickle</p>
+                </>
+              )}
             </div>
           </div>
-
-          {uploadType === 'file' && (
-            <div className="animate-slide-up">
-              <div className="mb-md">
-                <label style={{ fontSize: '0.85rem', marginBottom: 8, display: 'block', opacity: 0.8 }}>Choose a Demo Model (Quick Start)</label>
-                <div className="grid-3 gap-sm">
-                  {demoModels.map((m) => (
-                    <div 
-                      key={m.key}
-                      className={`card-interactive p-sm text-center ${demoModelKey === m.key ? 'active-border' : ''}`}
-                      onClick={() => handleDemoSelect(m.key)}
-                      style={{ cursor: 'pointer', background: 'rgba(255,255,255,0.03)', border: demoModelKey === m.key ? '1px solid var(--accent-primary)' : '1px solid rgba(255,255,255,0.1)' }}
-                    >
-                      <div style={{ fontWeight: 600, fontSize: '0.8rem' }}>{m.name.split(' ')[0]}</div>
-                      <div className="text-muted" style={{ fontSize: '0.7rem' }}>{m.key === 'neutral' ? 'Fair' : 'Biased'}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="divider-text"><span>OR UPLOAD CUSTOM FILE</span></div>
-
-              <div className={`upload-zone ${dragOver ? 'dragover' : ''} ${demoModelKey ? 'opacity-50' : ''}`}
-                onDragOver={(e) => { if(!demoModelKey) { e.preventDefault(); setDragOver(true); } }}
-                onDragLeave={() => setDragOver(false)}
-                onDrop={demoModelKey ? undefined : handleDrop}
-                onClick={() => !demoModelKey && document.getElementById('file-input').click()}>
-                <input type="file" id="file-input" accept=".pkl,.h5,.pickle,.joblib"
-                  onChange={handleFileChange} disabled={!!demoModelKey} />
-                <Upload size={32} style={{ color: 'var(--text-muted)', marginBottom: 8 }} />
-                {file ? (
-                  <p style={{ fontWeight: 600, color: 'var(--color-fair)' }}>{file.name} ({(file.size / 1024 / 1024).toFixed(1)}MB)</p>
-                ) : demoModelKey ? (
-                  <p style={{ fontWeight: 600, color: 'var(--accent-primary)' }}>Using Demo: {demoModels.find(m => m.key === demoModelKey).name}</p>
-                ) : (
-                  <>
-                    <p style={{ fontWeight: 500 }}>Drop your model file here</p>
-                    <p className="text-muted" style={{ fontSize: '0.8rem' }}>Supports .pkl, .joblib, .pickle</p>
-                  </>
-                )}
-              </div>
-            </div>
-          )}
-
-          {uploadType === 'api' && (
-            <div className="form-group animate-slide-up">
-              <label htmlFor="api-url">API Endpoint URL</label>
-              <input id="api-url" className="input" value={apiEndpoint}
-                onChange={(e) => setApiEndpoint(e.target.value)}
-                placeholder="https://api.example.com/predict" />
-              <p className="text-muted mt-sm" style={{ fontSize: '0.8rem' }}>Make sure your API follows the expected input/output format.</p>
-            </div>
-          )}
 
           {error && <div className="login-error mb-md animate-shake">{error}</div>}
 

@@ -31,21 +31,23 @@ async def upload_model(
     if demo_model_key:
         # Handle demo model selection
         demo_map = {
-            "bias_logistic": "loan_bias_logistic.joblib",
-            "bias_rf": "loan_bias_random_forest.joblib",
-            "neutral": "loan_neutral.joblib"
+            "loan": "loan_model.joblib",
+            "loan_extreme": "loan_extreme_model.joblib",
+            "hiring": "hiring_model.joblib",
+            "hiring_extreme": "hiring_extreme_model.joblib",
+            "healthcare": "healthcare_model.joblib",
+            "healthcare_extreme": "healthcare_extreme_model.joblib",
+            "insurance": "insurance_model.joblib",
+            "education": "education_model.joblib"
         }
         if demo_model_key not in demo_map:
             raise HTTPException(400, "Invalid demo model key")
         
         demo_filename = demo_map[demo_model_key]
-        demo_source = Path(__file__).resolve().parent.parent.parent.parent / "demo_downloads" / demo_filename
+        demo_source = Path(__file__).resolve().parent.parent.parent.parent / "demo_test_suite" / demo_filename
         
         if not demo_source.exists():
-            # Fallback to demo/ folder just in case
-            demo_source = Path(__file__).resolve().parent.parent.parent.parent / "demo" / demo_filename
-            if not demo_source.exists():
-                 raise HTTPException(404, f"Demo model file not found at {demo_source}")
+            raise HTTPException(404, f"Demo model file not found at {demo_source}")
 
         
         # Copy to uploads/models

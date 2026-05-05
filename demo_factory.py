@@ -10,7 +10,7 @@ from sklearn.metrics import accuracy_score
 
 # Add backend to path to use shared utilities
 import sys
-BASE_DIR = Path("d:/Personal_projects/Detect_bias")
+BASE_DIR = Path("d:/Personal_projects/FairAudit_AI")
 sys.path.append(str(BASE_DIR / "backend"))
 from bias_engine.model_utils import BiasPreprocessor
 
@@ -150,6 +150,29 @@ def education_bias(df):
     score -= np.where(df['region'] == 'West', 2, 0)
     return score
 
+def loan_extreme_bias(df):
+    score = (df['income'] / 10000) + (df['credit_score'] / 100)
+    # EXTREME BIAS: Massive penalty for SC/ST and Female
+    score -= df['caste'].map({'SC': 15, 'ST': 15, 'OBC': 5, 'General': 0}).fillna(0)
+    score -= np.where(df['gender'] == 'Female', 10, 0)
+    return score
+
+def hiring_extreme_bias(df):
+    score = (df['years_exp'] * 2) + (df['coding_score'] / 5)
+    # EXTREME BIAS: Massive penalty for Female, certain languages, and regions
+    score -= np.where(df['gender'] == 'Female', 15, 0)
+    score -= df['language'].map({'Tamil': 10, 'Bengali': 10, 'English': 0, 'Hindi': 0}).fillna(0)
+    score -= df['region'].map({'North': 10, 'South': 0, 'East': 5, 'West': 0}).fillna(0)
+    return score
+
+def health_extreme_bias(df):
+    score = df['symptom_severity'] * 2 + df['pre_existing_conditions']
+    # EXTREME BIAS: Huge penalty for SC/ST and Female
+    score -= df['caste'].map({'SC': 12, 'ST': 12, 'OBC': 0, 'General': 0}).fillna(0)
+    score -= np.where(df['gender'] == 'Female', 8, 0)
+    return score
+
+
 # --- Run Factory ---
 if __name__ == "__main__":
     generate_demo("Loan Approval", "loan", loan_bias)
@@ -158,4 +181,8 @@ if __name__ == "__main__":
     generate_demo("Insurance Claim", "insurance", insurance_bias)
     generate_demo("Education Admission", "education", education_bias)
     
-    print(f"\nSuccess! All 5 demo setups are ready in {OUTPUT_DIR}")
+    generate_demo("Loan Approval", "loan_extreme", loan_extreme_bias)
+    generate_demo("Hiring/Recruitment", "hiring_extreme", hiring_extreme_bias)
+    generate_demo("Healthcare Diagnosis", "healthcare_extreme", health_extreme_bias)
+    
+    print(f"\nSuccess! All 8 demo setups are ready in {OUTPUT_DIR}")

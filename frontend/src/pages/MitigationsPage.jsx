@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { auditsAPI, reportsAPI } from '../api/client';
-import { Wrench, ArrowLeft, Download, Zap, Database, Code, Cpu } from 'lucide-react';
+import { Wrench, ArrowLeft, Download, Zap, Database, Code, Cpu, CheckCircle } from 'lucide-react';
 
 export default function MitigationsPage() {
   const { id } = useParams();

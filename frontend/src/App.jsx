@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Layout from './components/Layout/Layout';
+
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
@@ -12,6 +13,7 @@ import ResultsDashboardPage from './pages/ResultsDashboardPage';
 import ExplanationsPage from './pages/ExplanationsPage';
 import MitigationsPage from './pages/MitigationsPage';
 import ReportsPage from './pages/ReportsPage';
+import UserExplorePage from './pages/UserExplorePage';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -28,7 +30,8 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           
-          {/* Protected App Routes */}
+
+          {/* Protected App Routes (Admin) */}
           <Route path="/app" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
             <Route index element={<DashboardPage />} />
             <Route path="upload/model" element={<UploadModelPage />} />
@@ -39,7 +42,9 @@ function App() {
             <Route path="audit/explanations/:id" element={<ExplanationsPage />} />
             <Route path="audit/mitigations/:id" element={<MitigationsPage />} />
             <Route path="reports" element={<ReportsPage />} />
+            <Route path="explore" element={<UserExplorePage />} />
           </Route>
+
 
           {/* Catch-all redirect */}
           <Route path="*" element={<Navigate to="/" replace />} />

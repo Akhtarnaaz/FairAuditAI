@@ -1,4 +1,7 @@
 """FastAPI application entry point."""
+import os
+os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -42,10 +45,12 @@ def health_check():
 
 
 # ── Register routers (imported after app creation) ─────────────────────
-from app.routers import auth, models, datasets, audits, reports  # noqa: E402
+from app.routers import auth, models, datasets, audits, reports, user_explore  # noqa: E402
 
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(models.router, prefix="/api/models", tags=["Models"])
 app.include_router(datasets.router, prefix="/api/datasets", tags=["Datasets"])
 app.include_router(audits.router, prefix="/api/audits", tags=["Audits"])
 app.include_router(reports.router, prefix="/api/reports", tags=["Reports"])
+app.include_router(user_explore.router, prefix="/api/user-explore", tags=["User Explore"])
+

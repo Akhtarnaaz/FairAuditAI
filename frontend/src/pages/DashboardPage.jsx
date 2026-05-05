@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { auditsAPI, modelsAPI, datasetsAPI } from '../api/client';
-import { Plus, BarChart3, FileText, Upload, Shield, TrendingUp, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Plus, BarChart3, FileText, Upload, Shield, TrendingUp, AlertTriangle, CheckCircle, Trash2 } from 'lucide-react';
 
 export default function DashboardPage() {
   const { user, isAdmin } = useAuth();
@@ -32,6 +32,28 @@ export default function DashboardPage() {
       console.error('Failed to load dashboard data:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteAudit = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this audit?')) return;
+    try {
+      await auditsAPI.delete(id);
+      loadData();
+    } catch (err) {
+      console.error('Failed to delete audit:', err);
+      alert('Failed to delete audit');
+    }
+  };
+
+  const handleClearAllAudits = async () => {
+    if (!window.confirm('Are you sure you want to delete ALL audits? This cannot be undone.')) return;
+    try {
+      await auditsAPI.clearAll();
+      loadData();
+    } catch (err) {
+      console.error('Failed to clear audits:', err);
+      alert('Failed to clear audits');
     }
   };
 
@@ -122,7 +144,12 @@ export default function DashboardPage() {
       <div className="card-static">
         <div className="flex items-center justify-between mb-md">
           <h3>Recent Audits</h3>
-          <Link to="/reports" className="btn btn-secondary btn-sm">View All</Link>
+          <div className="flex gap-sm">
+            {isAdmin && audits.length > 0 && (
+              <button className="btn btn-danger btn-sm" onClick={handleClearAllAudits}>Clear All</button>
+            )}
+            <Link to="/reports" className="btn btn-secondary btn-sm">View All</Link>
+          </div>
         </div>
         {audits.length === 0 ? (
           <div className="empty-state">
@@ -153,18 +180,27 @@ export default function DashboardPage() {
                     <td>{getScoreBadge(audit.overall_score)}</td>
                     <td className="text-muted">{audit.created_at ? new Date(audit.created_at).toLocaleDateString() : '—'}</td>
                     <td>
-                      {audit.status === 'completed' && (
-                        <button className="btn btn-secondary btn-sm"
-                          onClick={() => navigate(`/audit/results/${audit.id}`)}>
-                          View
-                        </button>
-                      )}
-                      {audit.status === 'running' && (
-                        <button className="btn btn-secondary btn-sm"
-                          onClick={() => navigate(`/audit/progress/${audit.id}`)}>
-                          Progress
-                        </button>
-                      )}
+                      <div className="flex gap-sm">
+                        {audit.status === 'completed' && (
+                          <button className="btn btn-secondary btn-sm"
+                            onClick={() => navigate(`/app/audit/results/${audit.id}`)}>
+                            View
+                          </button>
+                        )}
+                        {audit.status === 'running' && (
+                          <button className="btn btn-secondary btn-sm"
+                            onClick={() => navigate(`/app/audit/progress/${audit.id}`)}>
+                            Progress
+                          </button>
+                        )}
+                        {isAdmin && (
+                          <button className="btn btn-danger btn-sm"
+                            onClick={() => handleDeleteAudit(audit.id)}
+                            style={{ padding: '0.4rem', color: 'var(--color-biased)' }}>
+                            <Trash2 size={16} />
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}

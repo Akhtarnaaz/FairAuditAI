@@ -64,6 +64,8 @@ export const auditsAPI = {
   results: (id) => client.get(`/audits/${id}/results`),
   list: () => client.get('/audits/'),
   preview: (id) => client.post(`/audits/${id}/preview`),
+  delete: (id) => client.delete(`/audits/${id}`),
+  clearAll: () => client.delete('/audits/all/clear'),
 };
 
 // ── Reports ───────────────────────────────────────────────────
@@ -72,6 +74,17 @@ export const reportsAPI = {
   list: () => client.get('/reports/'),
   downloadPdf: (id) => `${API_BASE}/reports/${id}/download/pdf`,
   downloadCsv: (id) => `${API_BASE}/reports/${id}/download/csv`,
+  delete: (id) => client.delete(`/reports/${id}`),
+  clearAll: () => client.delete('/reports/all/clear'),
+};
+
+// ── User Explore ──────────────────────────────────────────────
+export const userExploreAPI = {
+  ask: (query) => client.post('/user-explore/ask', { query }),
+  checkFairness: (query, response) => client.post('/user-explore/check-fairness', { query, response }),
+  testProfile: (query, original_response, modified_identity) => 
+    client.post('/user-explore/test-profile', { query, original_response, modified_identity }),
+  history: () => client.get('/user-explore/history'),
 };
 
 export default client;

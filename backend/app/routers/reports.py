@@ -249,3 +249,41 @@ def list_reports(
             downloaded_count=r.downloaded_count,
         ))
     return results
+
+@router.delete("/all/clear")
+def clear_all_reports(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin),
+):
+    """Delete all generated reports and physical files."""
+    reports = db.query(AuditReport).all()
+    for report in reports:
+        if report.pdf_filepath:
+            Path(report.pdf_filepath).unlink(missing_ok=True)
+        if report.csv_filepath:
+            Path(report.csv_filepath).unlink(missing_ok=True)
+    db.query(AuditReport).delete()
+    db.commit()
+    return {"detail": "All reports cleared successfully"}
+
+
+@router.delete("/{report_id}")
+def delete_report(
+    report_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin),
+):
+    """Delete a generated report."""
+    report = db.query(AuditReport).filter(AuditReport.id == report_id).first()
+    if not report:
+        raise HTTPException(404, "Report not found")
+
+    if report.pdf_filepath:
+        Path(report.pdf_filepath).unlink(missing_ok=True)
+    if report.csv_filepath:
+        Path(report.csv_filepath).unlink(missing_ok=True)
+
+    db.delete(report)
+    db.commit()
+    return {"detail": "Report deleted successfully"}
+

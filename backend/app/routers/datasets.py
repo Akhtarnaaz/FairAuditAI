@@ -17,24 +17,55 @@ router = APIRouter()
 
 @router.post("/upload", response_model=DatasetUploadResponse)
 async def upload_dataset(
-    dataset_name: str = Form(...),
-    file: UploadFile = File(...),
+    dataset_name: str = Form(None),
+    file: UploadFile = File(None),
+    demo_dataset_key: str = Form(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(require_admin),
 ):
-    """Upload a test dataset (CSV or JSON)."""
-    ext = Path(file.filename).suffix.lower()
-    if ext not in ALLOWED_DATASET_EXTENSIONS:
-        raise HTTPException(400, f"Invalid file type. Allowed: {ALLOWED_DATASET_EXTENSIONS}")
+    """Upload a test dataset or select a demo dataset."""
+    import shutil
 
-    filepath = DATASETS_DIR / f"{current_user.id}_{file.filename}"
-    content = await file.read()
+    if demo_dataset_key:
+        demo_map = {
+            "loan": "loan_dataset.csv",
+            "loan_extreme": "loan_extreme_dataset.csv",
+            "hiring": "hiring_dataset.csv",
+            "hiring_extreme": "hiring_extreme_dataset.csv",
+            "healthcare": "healthcare_dataset.csv",
+            "healthcare_extreme": "healthcare_extreme_dataset.csv",
+            "insurance": "insurance_dataset.csv",
+            "education": "education_dataset.csv"
+        }
+        if demo_dataset_key not in demo_map:
+            raise HTTPException(400, "Invalid demo dataset key")
+        
+        demo_filename = demo_map[demo_dataset_key]
+        demo_source = Path(__file__).resolve().parent.parent.parent.parent / "demo_test_suite" / demo_filename
+        
+        if not demo_source.exists():
+            raise HTTPException(404, f"Demo dataset file not found at {demo_source}")
+            
+        filepath = DATASETS_DIR / f"{current_user.id}_{demo_filename}"
+        shutil.copy(demo_source, filepath)
+        ext = ".csv"
+        actual_name = dataset_name or demo_filename.replace('.csv', '')
+    elif file:
+        ext = Path(file.filename).suffix.lower()
+        if ext not in ALLOWED_DATASET_EXTENSIONS:
+            raise HTTPException(400, f"Invalid file type. Allowed: {ALLOWED_DATASET_EXTENSIONS}")
 
-    if len(content) > MAX_DATASET_SIZE_MB * 1024 * 1024:
-        raise HTTPException(400, f"File exceeds {MAX_DATASET_SIZE_MB}MB limit")
+        filepath = DATASETS_DIR / f"{current_user.id}_{file.filename}"
+        content = await file.read()
 
-    with open(filepath, "wb") as f:
-        f.write(content)
+        if len(content) > MAX_DATASET_SIZE_MB * 1024 * 1024:
+            raise HTTPException(400, f"File exceeds {MAX_DATASET_SIZE_MB}MB limit")
+
+        with open(filepath, "wb") as f:
+            f.write(content)
+        actual_name = dataset_name or file.filename.replace(ext, '')
+    else:
+        raise HTTPException(400, "Provide either a file or a demo dataset key")
 
     # Parse and validate
     try:
@@ -55,7 +86,7 @@ async def upload_dataset(
 
     dataset = Dataset(
         uploaded_by_user_id=current_user.id,
-        dataset_name=dataset_name,
+        dataset_name=actual_name,
         filepath=str(filepath),
         num_rows=len(df),
         num_columns=len(df.columns),

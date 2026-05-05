@@ -7,6 +7,16 @@ export default function UploadDatasetPage() {
   const navigate = useNavigate();
   const [datasetName, setDatasetName] = useState('');
   const [file, setFile] = useState(null);
+  const [demoDatasetKey, setDemoDatasetKey] = useState('');
+
+  const demoDatasets = [
+    { key: 'loan', name: 'Loan Approval Dataset', desc: 'Financial data' },
+    { key: 'loan_extreme', name: 'Loan (Extreme)', desc: 'For extreme bias' },
+    { key: 'hiring', name: 'Hiring Dataset', desc: 'HR data' },
+    { key: 'hiring_extreme', name: 'Hiring (Extreme)', desc: 'For extreme bias' },
+    { key: 'healthcare', name: 'Healthcare Dataset', desc: 'Medical data' },
+    { key: 'healthcare_extreme', name: 'Healthcare (Extreme)', desc: 'For extreme bias' }
+  ];
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState(null);
@@ -16,18 +26,40 @@ export default function UploadDatasetPage() {
     e.preventDefault();
     setDragOver(false);
     const f = e.dataTransfer.files?.[0];
-    if (f) setFile(f);
+    if (f) {
+      setFile(f);
+      setDemoDatasetKey('');
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const f = e.target.files?.[0];
+    if (f) {
+      setFile(f);
+      setDemoDatasetKey('');
+    }
+  };
+
+  const handleDemoSelect = (key) => {
+    setDemoDatasetKey(key);
+    setFile(null);
+    const ds = demoDatasets.find(d => d.key === key);
+    if (ds) setDatasetName(ds.name);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!file) { setError('Please select a file'); return; }
+    if (!file && !demoDatasetKey) { setError('Please select a file or a demo dataset'); return; }
     setError('');
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append('dataset_name', datasetName || file.name.replace(/\.[^.]+$/, ''));
-      formData.append('file', file);
+      formData.append('dataset_name', datasetName || (demoDatasetKey ? demoDatasets.find(d => d.key === demoDatasetKey).name : file.name.replace(/\.[^.]+$/, '')));
+      if (demoDatasetKey) {
+        formData.append('demo_dataset_key', demoDatasetKey);
+      } else {
+        formData.append('file', file);
+      }
       const res = await datasetsAPI.upload(formData);
       setResult(res.data);
     } catch (err) {
@@ -108,19 +140,21 @@ export default function UploadDatasetPage() {
               placeholder="e.g., Loan Applications Test Set" />
           </div>
 
-          <div className={`upload-zone ${dragOver ? 'dragover' : ''}`}
-            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+          <div className={`upload-zone ${dragOver ? 'dragover' : ''} ${demoDatasetKey ? 'opacity-50' : ''}`}
+            onDragOver={(e) => { if(!demoDatasetKey) { e.preventDefault(); setDragOver(true); } }}
             onDragLeave={() => setDragOver(false)}
-            onDrop={handleDrop}
-            onClick={() => document.getElementById('dataset-file').click()}>
+            onDrop={demoDatasetKey ? undefined : handleDrop}
+            onClick={() => !demoDatasetKey && document.getElementById('dataset-file').click()}>
             <input type="file" id="dataset-file" accept=".csv,.json"
-              onChange={(e) => setFile(e.target.files?.[0])} />
+              onChange={handleFileChange} disabled={!!demoDatasetKey} />
             <Upload size={32} style={{ color: 'var(--text-muted)', marginBottom: 8 }} />
             {file ? (
               <p style={{ fontWeight: 600, color: 'var(--color-fair)' }}>
                 <CheckCircle size={16} style={{ display: 'inline', marginRight: 6 }} />
                 {file.name} ({(file.size / 1024).toFixed(0)}KB)
               </p>
+            ) : demoDatasetKey ? (
+              <p style={{ fontWeight: 600, color: 'var(--accent-primary)' }}>Using Demo: {demoDatasets.find(d => d.key === demoDatasetKey).name}</p>
             ) : (
               <>
                 <p style={{ fontWeight: 500 }}>Drop your dataset file here</p>

@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
   LayoutDashboard, Upload, Settings, BarChart3,
-  FileText, Shield, AlertTriangle, Wrench,
+  FileText, Shield, AlertTriangle, Wrench, Sparkles,
 } from 'lucide-react';
 
 export default function Sidebar() {
@@ -21,6 +21,12 @@ export default function Sidebar() {
         <NavLink to="/app" end className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
           <LayoutDashboard size={18} /> Dashboard
         </NavLink>
+        
+        <NavLink to="/app/explore" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+          <Sparkles size={18} /> Explore Fairness
+        </NavLink>
+
+
 
         {isAdmin && (
           <>

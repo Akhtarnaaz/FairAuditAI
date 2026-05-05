@@ -344,3 +344,41 @@ def preview_counterfactual_pairs(
 
     previews = preview_counterfactuals(df, dims, audit.variation_strategy)
     return {"previews": previews, "estimated_pairs": len(df) * sum(1 for v in dims.values() if v)}
+
+
+@router.delete("/all/clear")
+def clear_all_audits(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin),
+):
+    """Delete all audit runs and associated data."""
+    db.query(FairnessScore).delete()
+    db.query(BiasExplanation).delete()
+    db.query(MitigationRecommendation).delete()
+    db.query(AuditRun).delete()
+    db.commit()
+    return {"detail": "All audits cleared successfully"}
+
+
+@router.delete("/{audit_id}")
+def delete_audit(
+    audit_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin),
+):
+    """Delete an audit run and its associated scores, explanations, and mitigations."""
+    audit = db.query(AuditRun).filter(AuditRun.id == audit_id).first()
+    if not audit:
+        raise HTTPException(404, "Audit not found")
+
+    # Cascade delete is usually handled by DB, but we can do it explicitly if needed.
+    # Since we defined relationships (or just let the DB handle it if cascading is setup).
+    # Let's delete explicitly to be safe.
+    db.query(FairnessScore).filter(FairnessScore.audit_run_id == audit_id).delete()
+    db.query(BiasExplanation).filter(BiasExplanation.audit_run_id == audit_id).delete()
+    db.query(MitigationRecommendation).filter(MitigationRecommendation.audit_run_id == audit_id).delete()
+    
+    db.delete(audit)
+    db.commit()
+    return {"detail": "Audit deleted successfully"}
+

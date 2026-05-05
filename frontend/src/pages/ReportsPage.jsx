@@ -1,21 +1,67 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { reportsAPI, auditsAPI } from '../api/client';
-import { FileText, Download, BarChart3, ExternalLink } from 'lucide-react';
+import { FileText, Download, BarChart3, ExternalLink, Trash2 } from 'lucide-react';
 
 export default function ReportsPage() {
+  const { isAdmin } = useAuth();
   const navigate = useNavigate();
   const [reports, setReports] = useState([]);
   const [audits, setAudits] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const loadData = () => {
     Promise.all([reportsAPI.list(), auditsAPI.list()]).then(([r, a]) => {
       setReports(r.data);
       setAudits(a.data);
       setLoading(false);
     }).catch(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    loadData();
   }, []);
+
+  const handleDeleteReport = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this report?')) return;
+    try {
+      await reportsAPI.delete(id);
+      loadData();
+    } catch (err) {
+      alert('Failed to delete report');
+    }
+  };
+
+  const handleDeleteAudit = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this audit?')) return;
+    try {
+      await auditsAPI.delete(id);
+      loadData();
+    } catch (err) {
+      alert('Failed to delete audit');
+    }
+  };
+
+  const handleClearAllReports = async () => {
+    if (!window.confirm('Are you sure you want to delete ALL reports? This cannot be undone.')) return;
+    try {
+      await reportsAPI.clearAll();
+      loadData();
+    } catch (err) {
+      alert('Failed to clear reports');
+    }
+  };
+
+  const handleClearAllAudits = async () => {
+    if (!window.confirm('Are you sure you want to delete ALL audits? This cannot be undone.')) return;
+    try {
+      await auditsAPI.clearAll();
+      loadData();
+    } catch (err) {
+      alert('Failed to clear audits');
+    }
+  };
 
   const getScoreBadge = (score) => {
     if (score == null) return <span className="text-muted">—</span>;
@@ -69,7 +115,10 @@ export default function ReportsPage() {
           {/* Reports Table */}
           {reports.length > 0 && (
             <div className="card-static mb-lg">
-              <h3 style={{ marginBottom: 'var(--space-md)' }}>Generated Reports</h3>
+              <div className="flex items-center justify-between mb-md">
+                <h3>Generated Reports</h3>
+                {isAdmin && <button className="btn btn-danger btn-sm" onClick={handleClearAllReports}>Clear All Reports</button>}
+              </div>
               <div className="table-container">
                 <table>
                   <thead>
@@ -108,6 +157,13 @@ export default function ReportsPage() {
                               onClick={() => navigate(`/app/audit/results/${report.audit_run_id}`)}>
                               <ExternalLink size={12} /> View
                             </button>
+                            {isAdmin && (
+                              <button className="btn btn-danger btn-sm"
+                                onClick={() => handleDeleteReport(report.id)}
+                                style={{ padding: '0.4rem', color: 'var(--color-biased)' }}>
+                                <Trash2 size={16} />
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -120,7 +176,12 @@ export default function ReportsPage() {
 
           {/* Completed Audits */}
           <div className="card-static">
-            <h3 style={{ marginBottom: 'var(--space-md)' }}>Completed Audits</h3>
+            <div className="flex items-center justify-between mb-md">
+              <h3>Completed Audits</h3>
+              {isAdmin && audits.filter(a => a.status === 'completed').length > 0 && (
+                <button className="btn btn-danger btn-sm" onClick={handleClearAllAudits}>Clear All Audits</button>
+              )}
+            </div>
             <div className="table-container">
               <table>
                 <thead>
@@ -142,10 +203,19 @@ export default function ReportsPage() {
                       <td>{getScoreBadge(audit.overall_score)}</td>
                       <td className="text-muted">{audit.created_at ? new Date(audit.created_at).toLocaleDateString() : '—'}</td>
                       <td>
-                        <button className="btn btn-secondary btn-sm"
-                          onClick={() => navigate(`/app/audit/results/${audit.id}`)}>
-                          View Results
-                        </button>
+                        <div className="flex gap-sm">
+                          <button className="btn btn-secondary btn-sm"
+                            onClick={() => navigate(`/app/audit/results/${audit.id}`)}>
+                            View Results
+                          </button>
+                          {isAdmin && (
+                            <button className="btn btn-danger btn-sm"
+                              onClick={() => handleDeleteAudit(audit.id)}
+                              style={{ padding: '0.4rem', color: 'var(--color-biased)' }}>
+                              <Trash2 size={16} />
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}
