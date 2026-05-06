@@ -99,3 +99,9 @@ def test_profile(data: TestProfileRequest, current_user: User = Depends(get_curr
 def get_history(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     queries = db.query(UserQuery).filter(UserQuery.user_id == current_user.id).order_by(UserQuery.created_at.desc()).all()
     return queries
+
+@router.delete("/history")
+def clear_history(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    db.query(UserQuery).filter(UserQuery.user_id == current_user.id).delete()
+    db.commit()
+    return {"status": "success"}

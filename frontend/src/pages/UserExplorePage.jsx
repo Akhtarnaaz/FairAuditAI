@@ -274,7 +274,27 @@ Counterfactual Test (${gender}, ${region}): ${comparison?.modified_response || '
         {/* Sidebar History */}
         <div className="flex flex-col gap-md">
           <div className="card-static" style={{ position: 'sticky', top: 'var(--space-md)' }}>
-            <h3 className="flex items-center gap-sm mb-lg"><History size={20} /> Your History</h3>
+            <div className="flex items-center justify-between mb-lg">
+              <h3 className="flex items-center gap-sm"><History size={20} /> Your History</h3>
+              {history.length > 0 && (
+                <button 
+                  className="btn btn-secondary btn-sm" 
+                  onClick={async () => {
+                    if (window.confirm('Are you sure you want to clear your history?')) {
+                      try {
+                        await userExploreAPI.clearHistory();
+                        setHistory([]);
+                      } catch(err) {
+                        alert('Failed to clear history');
+                      }
+                    }
+                  }}
+                  style={{ padding: '4px 8px', fontSize: '0.8rem' }}
+                >
+                  Clear All
+                </button>
+              )}
+            </div>
             <div className="flex flex-col gap-sm" style={{ maxHeight: '75vh', overflowY: 'auto', paddingRight: '4px' }}>
               {history.length === 0 ? (
                 <div className="empty-state" style={{ padding: 'var(--space-lg)' }}>

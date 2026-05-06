@@ -1,0 +1,16 @@
+=== FAIRNESS SCORES ===
+Dimension,Fairness Score,Disparity Ratio,Status
+gender,0.9919,0.9919,Fair
+language,0.9794,1.0206,Fair
+region,1.0,1.0,Fair
+
+=== BIAS EXPLANATIONS ===
+Dimension,Severity,Explanation,Root Cause
+gender,low,"Minimal bias detected in the Gender dimension. The fairness score of 0.99 indicates the model treats demographic variants largely equally, with only 4.7% average difference. The Disparate Impact Ratio of 0.99 meets the 0.80 threshold.",Minimal gender bias detected. The model treats gender-variant inputs largely equally with minor statistical variation.
+language,low,"Minimal bias detected in the Language dimension. The fairness score of 0.98 indicates the model treats demographic variants largely equally, with only 2.1% average difference. The Disparate Impact Ratio of 1.02 meets the 0.80 threshold.",Negligible language-based performance gap. The model handles linguistic variation adequately.
+region,low,"Minimal bias detected in the Region dimension. The fairness score of 1.00 indicates the model treats demographic variants largely equally, with only 0.0% average difference. The Disparate Impact Ratio of 1.00 meets the 0.80 threshold.",Minor regional variation within acceptable bounds. Geographic features have minimal impact on predictions.
+
+=== MITIGATION RECOMMENDATIONS ===
+Priority,Dimension,Type,Recommendation,Effort,Impact
+1,language,data_level,Assign higher weights to underrepresented groups during training.,low,medium
+2,language,best_practice,Schedule periodic re-audits to detect future fairness drift.,low,high

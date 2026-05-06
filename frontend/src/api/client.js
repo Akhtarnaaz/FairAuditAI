@@ -88,6 +88,7 @@ export const userExploreAPI = {
   testProfile: (query, original_response, modified_identity) => 
     client.post('/user-explore/test-profile', { query, original_response, modified_identity }),
   history: () => client.get('/user-explore/history'),
+  clearHistory: () => client.delete('/user-explore/history'),
 };
 
 export default client;
