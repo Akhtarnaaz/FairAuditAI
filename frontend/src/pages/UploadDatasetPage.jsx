@@ -126,12 +126,13 @@ export default function UploadDatasetPage() {
 
   return (
     <div className="page animate-fade-in">
-      <div className="page-header">
-        <h1>Upload Test Dataset</h1>
-        <p>Step 2 of 3 — Upload a CSV or JSON dataset with ≥10 rows</p>
-      </div>
+      <div style={{ maxWidth: 640, margin: '0 auto', paddingTop: '2rem' }}>
+        <div className="page-header" style={{ borderBottom: 'none', paddingBottom: 0, marginBottom: 'var(--space-lg)' }}>
+          <h1>Upload Test Dataset</h1>
+          <p>Step 2 of 3 — Upload a CSV or JSON dataset with ≥10 rows</p>
+        </div>
 
-      <div className="card-static" style={{ maxWidth: 640 }}>
+        <div className="card-static">
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="dataset-name">Dataset Name</label>
@@ -169,6 +170,7 @@ export default function UploadDatasetPage() {
             {loading ? <div className="spinner" /> : 'Upload & Preview'}
           </button>
         </form>
+      </div>
       </div>
     </div>
   );

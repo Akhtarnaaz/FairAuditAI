@@ -90,12 +90,13 @@ export default function UploadModelPage() {
 
   return (
     <div className="page animate-fade-in">
-      <div className="page-header">
-        <h1>Model Setup</h1>
-        <p>Choose an AI model to audit for bias and fairness</p>
-      </div>
+      <div style={{ maxWidth: 680, margin: '0 auto', paddingTop: '2rem' }}>
+        <div className="page-header" style={{ borderBottom: 'none', paddingBottom: 0, marginBottom: 'var(--space-lg)' }}>
+          <h1>Model Setup</h1>
+          <p>Choose an AI model to audit for bias and fairness</p>
+        </div>
 
-      <div className="card-static" style={{ maxWidth: 680, margin: '0 auto' }}>
+        <div className="card-static">
         <form onSubmit={handleSubmit}>
           <div className="grid-2 gap-md mb-md">
             <div className="form-group">
@@ -148,6 +149,7 @@ export default function UploadModelPage() {
             </button>
           </div>
         </form>
+      </div>
       </div>
     </div>
   );

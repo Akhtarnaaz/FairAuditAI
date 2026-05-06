@@ -11,6 +11,21 @@ FairAudit AI is a full-stack, enterprise-grade system that detects, measures, an
 
 ---
 
+## 🎯 Problem Statement (AI-04)
+
+**AI Bias & Fairness Auditor with Counterfactual Testing**
+
+*Build an AI system that detects and explains bias in AI model outputs across gender, caste, language, or region using counterfactual input variation, fairness scoring, and mitigation recommendations.*
+
+This project successfully fulfills the entire problem statement by implementing:
+- **Bias Detection Engine**: Identifying biased outputs across demographic groups.
+- **Fairness Scoring System**: Assigning standardized fairness scores per dimension.
+- **Counterfactual Testing**: Re-running inputs with slight identity variations to detect sensitivity.
+- **Bias Explanation Module**: Explaining why bias occurred in plain terms with legal context.
+- **Mitigation Suggestions**: Recommending data or output-level fixes to reduce detected bias.
+
+---
+
 ## 🚀 Key Features
 
 ### 🔍 Counterfactual Bias Detection
@@ -35,6 +50,17 @@ Instantly generate and download PDF and CSV audit reports to share with complian
 
 ### 🔐 Secure & Role-Based Access
 Features integrated **Google Sign-In** for seamless access, alongside a role-based access control (RBAC) system distinguishing between `Admin (Auditor)` capabilities and `Viewer` read-only access.
+
+---
+
+## 🔄 Audit Workflow
+
+1. **Model Registration**: Upload your pre-trained `.joblib` or `.pkl` model (or connect an API endpoint).
+2. **Dataset Ingestion**: Upload a representative dataset (`.csv` or `.json`) containing demographic columns.
+3. **Configuration**: Select the specific demographic dimensions you wish to audit (e.g., Gender, Region, Caste).
+4. **Counterfactual Simulation**: The engine creates thousands of "what-if" scenarios, stripping away the original identity markers and replacing them to test for algorithmic prejudice.
+5. **Evaluation**: The dashboard presents an overall Fairness Score alongside detailed metric breakdowns.
+6. **Mitigation**: Developers receive concrete next steps to fix the data pipeline or threshold mechanics.
 
 ---
 
@@ -124,6 +150,17 @@ Want to see FairAudit in action immediately without training your own biased mod
 
 ---
 
+## 🔌 API Endpoints Summary
+
+- `POST /api/models/upload` - Upload and register a new ML model.
+- `POST /api/datasets/upload` - Upload and parse test datasets.
+- `POST /api/audits/run` - Trigger the counterfactual testing engine.
+- `GET /api/audits/{id}` - Retrieve complete fairness metrics for a specific audit.
+- `GET /api/audits/{id}/explanations` - Fetch plain-text generated root cause analysis.
+- `GET /api/audits/{id}/mitigations` - Fetch algorithmic and data-level mitigation recommendations.
+
+---
+
 ## 📁 Project Structure
 
 ```text
@@ -165,4 +202,4 @@ Contributions are welcome! If you'd like to improve the bias detection algorithm
 Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
-*Built with ❤️ by Team ByteCore for the future of responsible AI.*
+*Copyright © 2026 FairAudit AI by Team ByteCore. All rights reserved.*
