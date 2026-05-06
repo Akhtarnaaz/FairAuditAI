@@ -20,7 +20,7 @@ export default function MitigationsPage() {
   const typeConfig = {
     data_level: { icon: <Database size={18} />, color: '#74b9ff', label: 'Data-Level Fix' },
     feature_level: { icon: <Code size={18} />, color: '#a29bfe', label: 'Feature-Level Fix' },
-    output_level: { icon: <Zap size={18} />, color: '#fdcb6e', label: 'Output-Level Fix' },
+    output_level: { icon: <Zap size={18} />, color: '#e67e22', label: 'Output-Level Fix' },
     model_level: { icon: <Cpu size={18} />, color: '#e17055', label: 'Model-Level Fix' },
     best_practice: { icon: <CheckCircle size={18} />, color: '#00cec9', label: 'Best Practice' },
   };

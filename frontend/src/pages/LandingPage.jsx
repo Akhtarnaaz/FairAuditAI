@@ -21,16 +21,14 @@ export default function LandingPage() {
           <span>FairAudit AI</span>
         </div>
         <div className="nav-links">
-          <button onClick={() => navigate('/login')} className="nav-btn-text">Sign In</button>
-          <button onClick={() => navigate('/login')} className="btn btn-primary btn-sm">Get Started</button>
+          <button onClick={() => navigate('/login')} className="btn btn-primary btn-sm">Sign In</button>
         </div>
       </nav>
 
       {/* ── Hero Section ── */}
       <header className="hero-section container">
         <div className="hero-content animate-slide-up">
-          <div className="badge">v1.0 is now live</div>
-          <h1>Make AI Fairness <br /><span>Quantifiable & Actionable</span></h1>
+          <h1>Bring your own models <br /><span>and we will audit it for bias</span></h1>
           <p>
             Detect, measure, and explain bias in your AI models using advanced 
             counterfactual testing. Build trust through transparency.
@@ -39,9 +37,6 @@ export default function LandingPage() {
             <button onClick={() => navigate('/login')} className="btn btn-primary btn-lg">
               Start Your First Audit <ArrowRight size={18} />
             </button>
-            <button className="btn btn-outline btn-lg">
-              <ExternalLink size={18} /> Documentation
-            </button>
           </div>
         </div>
         
@@ -49,7 +44,7 @@ export default function LandingPage() {
           <div className="glass-card dashboard-preview">
             <div className="preview-header">
               <div className="dot red" />
-              <div className="dot yellow" />
+              <div className="dot orange" />
               <div className="dot green" />
               <span className="preview-title">Fairness Dashboard</span>
             </div>
@@ -105,7 +100,7 @@ export default function LandingPage() {
 
       {/* ── Footer ── */}
       <footer className="landing-footer container">
-        <p>© 2026 FairAudit AI. Built for the future of responsible AI.</p>
+        <p>© 2026 FairAudit AI. Built by team ByteCore</p>
       </footer>
     </div>
   );

@@ -10,7 +10,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
-    if (token && savedUser) {
+    if (savedUser) {
       try {
         setUser(JSON.parse(savedUser));
       } catch { /* ignore */ }

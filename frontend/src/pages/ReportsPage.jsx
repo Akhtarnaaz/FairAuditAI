@@ -99,7 +99,7 @@ export default function ReportsPage() {
 
       {/* Completed audits without reports */}
       {audits.filter(a => a.status === 'completed').length > 0 && reports.length === 0 && (
-        <div className="card mb-lg" style={{ background: 'rgba(108,92,231,0.06)' }}>
+        <div className="card mb-lg" style={{ background: 'rgba(232,90,79,0.06)' }}>
           <p>You have completed audits. Generate a report from the results page to see it here.</p>
         </div>
       )}

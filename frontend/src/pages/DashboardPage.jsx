@@ -12,6 +12,24 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log('Dashboard loaded, checking auth...');
+    const userStr = localStorage.getItem('user');
+    
+    if (!userStr || userStr === 'undefined' || userStr === 'null') {
+      console.log('No user found on dashboard, redirecting to /login');
+      window.location.href = '/login';
+      return;
+    }
+
+    try {
+      const parsedUser = JSON.parse(userStr);
+      console.log('Dashboard user confirmed:', parsedUser);
+    } catch (e) {
+      console.log('Failed to parse user, redirecting to /login');
+      window.location.href = '/login';
+      return;
+    }
+
     loadData();
   }, []);
 
@@ -81,7 +99,7 @@ export default function DashboardPage() {
       <div className="grid-4 mb-lg">
         <div className="card" style={{ borderLeft: '3px solid var(--accent-primary)' }}>
           <div className="flex items-center gap-md">
-            <div style={{ padding: 10, borderRadius: 'var(--radius-md)', background: 'rgba(108,92,231,0.1)' }}>
+            <div style={{ padding: 10, borderRadius: 'var(--radius-md)', background: 'rgba(232,90,79,0.1)' }}>
               <Shield size={22} color="var(--accent-secondary)" />
             </div>
             <div>
@@ -128,13 +146,13 @@ export default function DashboardPage() {
       </div>
 
       {isAdmin && (
-        <div className="card mb-lg" style={{ background: 'linear-gradient(135deg, rgba(108,92,231,0.08), rgba(116,185,255,0.05))' }}>
+        <div className="card mb-lg" style={{ background: 'linear-gradient(135deg, rgba(232,90,79,0.08), rgba(233,128,116,0.05))' }}>
           <div className="flex items-center justify-between flex-wrap gap-md">
             <div>
               <h3>Start a New Fairness Audit</h3>
               <p className="text-secondary" style={{ fontSize: '0.9rem', marginTop: 4 }}>Upload your model and dataset, configure counterfactual tests, and detect bias</p>
             </div>
-            <button className="btn btn-primary" onClick={() => navigate('/upload/model')} id="new-audit-btn">
+            <button className="btn btn-primary" onClick={() => navigate('/app/upload/model')} id="new-audit-btn">
               <Plus size={16} /> New Audit
             </button>
           </div>
@@ -148,7 +166,9 @@ export default function DashboardPage() {
             {isAdmin && audits.length > 0 && (
               <button className="btn btn-danger btn-sm" onClick={handleClearAllAudits}>Clear All</button>
             )}
-            <Link to="/reports" className="btn btn-secondary btn-sm">View All</Link>
+            {isAdmin && (
+              <Link to="/reports" className="btn btn-secondary btn-sm">View All</Link>
+            )}
           </div>
         </div>
         {audits.length === 0 ? (

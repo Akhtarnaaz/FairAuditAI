@@ -137,7 +137,7 @@ export default function ConfigCounterfactualPage() {
             </div>
           </div>
 
-          <div className="card" style={{ background: 'rgba(108,92,231,0.06)', textAlign: 'center' }}>
+          <div className="card" style={{ background: 'rgba(232,90,79,0.06)', textAlign: 'center' }}>
             <div className="text-muted" style={{ fontSize: '0.8rem', marginBottom: 4 }}>Estimated Test Cases</div>
             <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--accent-secondary)' }}>
               ~{(datasets.find(d => d.id === selectedDataset)?.num_rows || 100) * Object.values(dimensions).filter(Boolean).length}

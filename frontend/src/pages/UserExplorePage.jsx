@@ -208,7 +208,7 @@ Counterfactual Test (${gender}, ${region}): ${comparison?.modified_response || '
 
           {/* Comparison Result */}
           {comparison && (
-            <div className="card-static animate-slide-up" style={{ background: 'rgba(108,92,231,0.05)', border: '1px solid rgba(108,92,231,0.2)' }}>
+            <div className="card-static animate-slide-up" style={{ background: 'rgba(232,90,79,0.05)', border: '1px solid rgba(232,90,79,0.2)' }}>
               <h3 className="mb-lg flex items-center gap-sm">
                 <RefreshCcw size={20} /> Counterfactual Comparison
               </h3>

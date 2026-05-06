@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Shield, Eye, EyeOff } from 'lucide-react';
@@ -15,6 +15,40 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const { login, register } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const userStr = localStorage.getItem('user');
+    if (userStr && userStr !== 'undefined' && userStr !== 'null') {
+      console.log('User found on login page load, redirecting...');
+      window.location.href = '/app';
+    }
+
+    window.handleCredentialResponse = (response) => {
+      try {
+        const payload = JSON.parse(atob(response.credential.split('.')[1]));
+        const user = {
+          name: payload.name,
+          email: payload.email,
+          picture: payload.picture
+        };
+        localStorage.setItem('user', JSON.stringify(user));
+        console.log('User stored:', user);
+        window.location.href = '/app';
+      } catch (e) {
+        console.error('Error decoding Google JWT', e);
+      }
+    };
+
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+
+    return () => {
+      delete window.handleCredentialResponse;
+    };
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -113,6 +147,18 @@ export default function LoginPage() {
           <button type="submit" className="btn btn-primary btn-lg w-full" disabled={loading} id="login-submit">
             {loading ? <div className="spinner" /> : (isRegister ? 'Create Account' : 'Sign In')}
           </button>
+
+          <div style={{ textAlign: 'center', margin: '16px 0', color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 500 }}>
+            OR
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div id="g_id_onload"
+                 data-client_id="147176817718-mjru1oe3muc4ko1vn1l7n4gh7bba4qcm.apps.googleusercontent.com"
+                 data-callback="handleCredentialResponse">
+            </div>
+            <div className="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="continue_with" data-shape="rectangular" data-logo_alignment="left" style={{ width: '100%' }}></div>
+          </div>
         </form>
 
         <div className="login-footer">

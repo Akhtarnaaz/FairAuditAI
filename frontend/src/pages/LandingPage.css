@@ -21,7 +21,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(10, 10, 18, 0.5);
+  background: rgba(234, 231, 220, 0.85); /* Light beige glass */
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-subtle);
 }
@@ -58,9 +58,9 @@
   display: grid;
   grid-template-columns: 1.2fr 0.8fr;
   align-items: center;
-  gap: var(--space-3xl);
-  padding-top: var(--space-4xl);
-  padding-bottom: var(--space-4xl);
+  gap: 64px;
+  padding-top: 80px;
+  padding-bottom: 120px;
   min-height: 80vh;
 }
 
@@ -120,9 +120,9 @@
 }
 
 .glass-card {
-  background: rgba(25, 25, 35, 0.6);
+  background: rgba(229, 213, 189, 0.65); /* #E5D5BD with opacity */
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
 }
 
@@ -131,13 +131,13 @@
   max-width: 500px;
   border-radius: var(--radius-xl);
   overflow: hidden;
-  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(25, 25, 35, 0.8);
+  box-shadow: 0 40px 100px rgba(142, 141, 138, 0.3);
+  border: 1px solid var(--border-subtle);
+  background: rgba(229, 213, 189, 0.95); /* Mostly solid surface */
 }
 
 .preview-header {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(142, 141, 138, 0.1);
   padding: 12px 16px;
   display: flex;
   align-items: center;
@@ -146,7 +146,7 @@
 
 .dot { width: 10px; height: 10px; border-radius: 50%; }
 .red { background: #ff5f56; }
-.yellow { background: #ffbd2e; }
+.orange { background: #e67e22; }
 .green { background: #27c93f; }
 
 .preview-title {
@@ -169,12 +169,12 @@
   gap: 12px;
   margin-bottom: var(--space-xl);
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .bar {
   flex: 1;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(142, 141, 138, 0.15);
   border-radius: 4px 4px 0 0;
   transition: height 1s ease;
 }
@@ -201,8 +201,8 @@
 
 /* ── Features ── */
 .features-section {
-  padding-top: var(--space-4xl);
-  padding-bottom: var(--space-4xl);
+  padding-top: 80px;
+  padding-bottom: 80px;
 }
 
 .section-header h2 {
@@ -212,7 +212,7 @@
 
 .section-header p {
   color: var(--text-secondary);
-  margin-bottom: var(--space-3xl);
+  margin-bottom: 100px;
 }
 
 .features-grid {
@@ -234,7 +234,7 @@
 .feature-icon {
   width: 64px;
   height: 64px;
-  background: rgba(108, 92, 231, 0.1);
+  background: rgba(232, 90, 79, 0.1);
   border-radius: var(--radius-lg);
   display: flex;
   align-items: center;

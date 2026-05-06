@@ -66,19 +66,28 @@ export default function ExplanationsPage() {
                   </div>
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-md)' }}>
-                    <div>
+                    <div style={{ background: '#ffffff', padding: 'var(--space-md)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
                       <div className="text-muted" style={{ fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', marginBottom: 4 }}>Root Cause</div>
                       <p style={{ fontSize: '0.85rem', lineHeight: 1.6 }}>{expl.root_cause}</p>
                     </div>
-                    <div>
+                    <div style={{ background: '#ffffff', padding: 'var(--space-md)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
                       <div className="text-muted" style={{ fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', marginBottom: 4 }}>Affected Metric</div>
                       <p style={{ fontSize: '0.85rem' }}>{expl.affected_metric}</p>
                     </div>
                   </div>
 
                   {expl.legal_implications && (
-                    <div style={{ marginTop: 'var(--space-md)', background: 'rgba(225,112,85,0.05)', border: '1px solid rgba(225,112,85,0.15)', borderRadius: 'var(--radius-md)', padding: 'var(--space-md)' }}>
-                      <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-biased)', textTransform: 'uppercase', marginBottom: 4 }}>⚖️ Legal Implications</div>
+                    <div style={{ 
+                      marginTop: 'var(--space-md)', 
+                      background: 'rgba(232, 90, 79, 0.15)', 
+                      backdropFilter: 'blur(10px)',
+                      WebkitBackdropFilter: 'blur(10px)',
+                      border: '1px solid rgba(232, 90, 79, 0.3)', 
+                      boxShadow: '0 8px 32px rgba(232, 90, 79, 0.1)',
+                      borderRadius: 'var(--radius-md)', 
+                      padding: 'var(--space-md)' 
+                    }}>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--accent-primary)', textTransform: 'uppercase', marginBottom: 4 }}>⚖️ Legal Implications</div>
                       <p style={{ fontSize: '0.85rem', lineHeight: 1.6 }}>{expl.legal_implications}</p>
                     </div>
                   )}
