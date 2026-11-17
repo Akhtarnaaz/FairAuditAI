@@ -1,0 +1,40 @@
+=== FAIRNESS SCORES ===
+Dimension,Fairness Score,Disparity Ratio,Status
+language,0.9758,1.0242,Fair
+region+language,0.9545,1.0455,Fair
+gender+region,0.9966,0.9966,Fair
+region+gender+language,0.9803,0.9803,Fair
+region+language+gender,0.9774,0.9774,Fair
+language+region+gender,0.9792,1.0208,Fair
+language+region,0.922,1.078,Fair
+gender+language+region,0.947,1.053,Fair
+language+gender,0.976,1.024,Fair
+region+gender,0.9637,0.9637,Fair
+gender,0.9936,1.0064,Fair
+gender+language,0.9895,1.0105,Fair
+language+gender+region,0.9726,1.0274,Fair
+region,1.0,1.0,Fair
+gender+region+language,0.9145,1.0855,Fair
+
+=== BIAS EXPLANATIONS ===
+Dimension,Severity,Explanation,Root Cause
+language,low,"Minimal bias detected in the Language dimension. The fairness score of 0.98 indicates the model treats demographic variants largely equally, with only 1.6% average difference. The Disparate Impact Ratio of 1.02 meets the 0.80 threshold.",Negligible language-based performance gap. The model handles linguistic variation adequately.
+region+language,low,"Minimal bias detected in the Region+Language dimension. The fairness score of 0.95 indicates the model treats demographic variants largely equally, with only 3.7% average difference. The Disparate Impact Ratio of 1.05 meets the 0.80 threshold.",Unable to determine root cause.
+gender+region,low,"Minimal bias detected in the Gender+Region dimension. The fairness score of 1.00 indicates the model treats demographic variants largely equally, with only 3.9% average difference. The Disparate Impact Ratio of 1.00 meets the 0.80 threshold.",Unable to determine root cause.
+region+gender+language,low,"Minimal bias detected in the Region+Gender+Language dimension. The fairness score of 0.98 indicates the model treats demographic variants largely equally, with only 1.7% average difference. The Disparate Impact Ratio of 0.98 meets the 0.80 threshold.",Unable to determine root cause.
+region+language+gender,low,"Minimal bias detected in the Region+Language+Gender dimension. The fairness score of 0.98 indicates the model treats demographic variants largely equally, with only 2.5% average difference. The Disparate Impact Ratio of 0.98 meets the 0.80 threshold.",Unable to determine root cause.
+language+region+gender,low,"Minimal bias detected in the Language+Region+Gender dimension. The fairness score of 0.98 indicates the model treats demographic variants largely equally, with only 3.7% average difference. The Disparate Impact Ratio of 1.02 meets the 0.80 threshold.",Unable to determine root cause.
+language+region,low,"Minimal bias detected in the Language+Region dimension. The fairness score of 0.92 indicates the model treats demographic variants largely equally, with only 2.7% average difference. The Disparate Impact Ratio of 1.08 meets the 0.80 threshold.",Unable to determine root cause.
+gender+language+region,low,"Minimal bias detected in the Gender+Language+Region dimension. The fairness score of 0.95 indicates the model treats demographic variants largely equally, with only 3.1% average difference. The Disparate Impact Ratio of 1.05 meets the 0.80 threshold.",Unable to determine root cause.
+language+gender,low,"Minimal bias detected in the Language+Gender dimension. The fairness score of 0.98 indicates the model treats demographic variants largely equally, with only 1.8% average difference. The Disparate Impact Ratio of 1.02 meets the 0.80 threshold.",Unable to determine root cause.
+region+gender,low,"Minimal bias detected in the Region+Gender dimension. The fairness score of 0.96 indicates the model treats demographic variants largely equally, with only 3.9% average difference. The Disparate Impact Ratio of 0.96 meets the 0.80 threshold.",Unable to determine root cause.
+gender,low,"Minimal bias detected in the Gender dimension. The fairness score of 0.99 indicates the model treats demographic variants largely equally, with only 4.2% average difference. The Disparate Impact Ratio of 1.01 meets the 0.80 threshold.",Minimal gender bias detected. The model treats gender-variant inputs largely equally with minor statistical variation.
+gender+language,low,"Minimal bias detected in the Gender+Language dimension. The fairness score of 0.99 indicates the model treats demographic variants largely equally, with only 1.8% average difference. The Disparate Impact Ratio of 1.01 meets the 0.80 threshold.",Unable to determine root cause.
+language+gender+region,low,"Minimal bias detected in the Language+Gender+Region dimension. The fairness score of 0.97 indicates the model treats demographic variants largely equally, with only 2.5% average difference. The Disparate Impact Ratio of 1.03 meets the 0.80 threshold.",Unable to determine root cause.
+region,low,"Minimal bias detected in the Region dimension. The fairness score of 1.00 indicates the model treats demographic variants largely equally, with only 0.0% average difference. The Disparate Impact Ratio of 1.00 meets the 0.80 threshold.",Minor regional variation within acceptable bounds. Geographic features have minimal impact on predictions.
+gender+region+language,low,"Minimal bias detected in the Gender+Region+Language dimension. The fairness score of 0.91 indicates the model treats demographic variants largely equally, with only 3.4% average difference. The Disparate Impact Ratio of 1.09 meets the 0.80 threshold.",Unable to determine root cause.
+
+=== MITIGATION RECOMMENDATIONS ===
+Priority,Dimension,Type,Recommendation,Effort,Impact
+1,gender+region+language,data_level,Assign higher weights to underrepresented groups during training.,low,medium
+2,gender+region+language,best_practice,Schedule periodic re-audits to detect future fairness drift.,low,high
